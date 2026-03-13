@@ -28,6 +28,10 @@ async function insertAlert(
 
 async function checkDevicesOverLimit(tenantId: number, maxVeiculos: number) {
   const redis = getRedis();
+  if (!redis) {
+    return;
+  }
+
   const today = new Date().toISOString().split("T")[0];
   const count = await redis.scard(`devices:${tenantId}:${today}`);
 
@@ -68,6 +72,10 @@ async function checkMotoristasOverLimit(tenantId: number, maxMotoristas: number)
 
 async function updateVeiculosAtivos(tenantId: number) {
   const redis = getRedis();
+  if (!redis) {
+    return;
+  }
+
   const today = new Date().toISOString().split("T")[0];
   const count = await redis.scard(`active_veiculos:${tenantId}:${today}`);
 
@@ -82,6 +90,10 @@ async function updateVeiculosAtivos(tenantId: number) {
 
 export async function runAnomalyChecks() {
   const redis = getRedis();
+  if (!redis) {
+    return;
+  }
+
   const lock = await redis.set(LOCK_KEY, "1", "EX", LOCK_TTL_SECONDS, "NX");
 
   if (!lock) {
