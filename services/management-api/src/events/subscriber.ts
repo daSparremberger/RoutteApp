@@ -82,12 +82,21 @@ async function handleExecutionCompleted(payload: EventPayloads["execution.comple
 async function handleDeviceBound(payload: EventPayloads["device.bound"]) {
   const today = new Date().toISOString().split("T")[0];
   const redis = getRedis();
+  if (!redis) {
+    return;
+  }
   await redis.sadd(`devices:${payload.tenant_id}:${today}`, payload.device_id);
   await redis.expire(`devices:${payload.tenant_id}:${today}`, 48 * 60 * 60);
 }
 
 export function startManagementSubscriber() {
-  const subscriber = getRedis().duplicate();
+  const redis = getRedis();
+  if (!redis) {
+    console.warn("[management-api] REDIS_URL not configured, subscriber disabled");
+    return;
+  }
+
+  const subscriber = redis.duplicate();
   subscriber.subscribe(
     "user.logged_in",
     "execution.started",

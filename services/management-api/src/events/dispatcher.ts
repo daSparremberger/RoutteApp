@@ -4,6 +4,11 @@ import { pool } from "../db/pool";
 import { getRedis } from "../redis/client";
 
 export async function dispatchPendingOutboxEvents() {
+  const redis = getRedis();
+  if (!redis) {
+    return;
+  }
+
   const result = await pool.query(
     `SELECT *
      FROM management.outbox_events
@@ -15,8 +20,6 @@ export async function dispatchPendingOutboxEvents() {
   if (!result.rowCount) {
     return;
   }
-
-  const redis = getRedis();
 
   for (const row of result.rows) {
     const envelope: EventEnvelope<Record<string, unknown>> = {
@@ -41,6 +44,11 @@ export async function dispatchPendingOutboxEvents() {
 }
 
 export function startOutboxDispatcher() {
+  if (!getRedis()) {
+    console.warn("[management-api] REDIS_URL not configured, outbox dispatcher disabled");
+    return;
+  }
+
   setInterval(() => {
     void dispatchPendingOutboxEvents().catch((error) => {
       console.error("[management-api] outbox dispatch failed", error);
