@@ -1,0 +1,14 @@
+node_modules
+.git
+.env
+.env.local
+.env.test
+.turbo
+coverage
+runtime-logs
+apps/web/dist
+apps/mobile/.dart_tool
+apps/mobile/build
+packages/shared/dist
+services/app-api/dist
+services/management-api/dist
