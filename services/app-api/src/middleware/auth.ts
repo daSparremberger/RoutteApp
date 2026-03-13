@@ -35,7 +35,7 @@ export async function requireTenantActive(
   const appReq = req as unknown as AppRequest;
   const redis = getRedis();
   const key = `tenant:${appReq.tenantId}:active`;
-  const cached = await redis.get(key);
+  const cached = redis ? await redis.get(key) : null;
 
   if (cached === "false") {
     res.status(403).json({ error: "Tenant desativado" });
@@ -53,7 +53,9 @@ export async function requireTenantActive(
   );
 
   const isActive = Boolean(result.rows[0]?.ativo);
-  await redis.set(key, String(isActive), "EX", 60);
+  if (redis) {
+    await redis.set(key, String(isActive), "EX", 60);
+  }
 
   if (!isActive) {
     res.status(403).json({ error: "Tenant desativado" });
@@ -68,7 +70,7 @@ export function requireModule(slug: string) {
     const appReq = req as unknown as AppRequest;
     const redis = getRedis();
     const key = `module:${appReq.tenantId}:${slug}`;
-    const cached = await redis.get(key);
+    const cached = redis ? await redis.get(key) : null;
 
     if (cached === "false") {
       res.status(403).json({ error: "Modulo nao habilitado para este tenant" });
@@ -89,7 +91,9 @@ export function requireModule(slug: string) {
     );
 
     const enabled = Boolean(result.rows[0]?.habilitado);
-    await redis.set(key, String(enabled), "EX", 300);
+    if (redis) {
+      await redis.set(key, String(enabled), "EX", 300);
+    }
 
     if (!enabled) {
       res.status(403).json({ error: "Modulo nao habilitado para este tenant" });

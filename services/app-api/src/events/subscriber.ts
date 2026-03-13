@@ -29,11 +29,20 @@ async function markProcessed(eventId: string) {
 }
 
 async function projectTenantActive(tenantId: number, active: boolean) {
-  await getRedis().set(`tenant:${tenantId}:active`, String(active));
+  const redis = getRedis();
+  if (!redis) {
+    return;
+  }
+
+  await redis.set(`tenant:${tenantId}:active`, String(active));
 }
 
 async function projectModuleState(tenantId: number, slug: string, enabled: boolean) {
   const redis = getRedis();
+  if (!redis) {
+    return;
+  }
+
   await redis.set(`module:${tenantId}:${slug}`, String(enabled), "EX", 300);
 
   const modules = await pool.query(
@@ -55,11 +64,22 @@ async function projectModuleState(tenantId: number, slug: string, enabled: boole
 }
 
 async function projectLicense(tenantId: number, license: Record<string, unknown>) {
-  await getRedis().set(`license:${tenantId}`, JSON.stringify(license), "EX", 300);
+  const redis = getRedis();
+  if (!redis) {
+    return;
+  }
+
+  await redis.set(`license:${tenantId}`, JSON.stringify(license), "EX", 300);
 }
 
 export function startAppSubscriber() {
-  const subscriber = getRedis().duplicate();
+  const redis = getRedis();
+  if (!redis) {
+    console.warn("[app-api] REDIS_URL not configured, subscriber disabled");
+    return;
+  }
+
+  const subscriber = redis.duplicate();
   subscriber.subscribe(
     "tenant.created",
     "tenant.deactivated",

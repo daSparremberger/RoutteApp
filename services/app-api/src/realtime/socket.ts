@@ -13,9 +13,14 @@ export function createSocketServer(httpServer: HttpServer) {
     cors: { origin: "*" }
   });
 
-  const pubClient = getRedis().duplicate();
-  const subClient = getRedis().duplicate();
-  io.adapter(createAdapter(pubClient, subClient));
+  const redis = getRedis();
+  if (redis) {
+    const pubClient = redis.duplicate();
+    const subClient = redis.duplicate();
+    io.adapter(createAdapter(pubClient, subClient));
+  } else {
+    console.warn("[app-api] REDIS_URL not configured, socket redis adapter disabled");
+  }
 
   io.use((socket, next) => {
     const token =
@@ -49,6 +54,11 @@ export function createSocketServer(httpServer: HttpServer) {
       }
 
       const redis = getRedis();
+      if (!redis) {
+        socket.emit("all_locations", []);
+        return;
+      }
+
       const keys = await redis.keys(`location:${user.tenant_id}:*`);
       const values = keys.length ? await redis.mget(keys) : [];
       socket.emit(
@@ -59,6 +69,11 @@ export function createSocketServer(httpServer: HttpServer) {
 
     socket.on("location_update", async (payload) => {
       if (user.role !== "motorista") {
+        return;
+      }
+
+      const redis = getRedis();
+      if (!redis) {
         return;
       }
 
@@ -74,7 +89,7 @@ export function createSocketServer(httpServer: HttpServer) {
         timestamp: Date.now()
       };
 
-      await getRedis().set(
+      await redis.set(
         `location:${user.tenant_id}:${user.sub}`,
         JSON.stringify(location),
         "EX",
