@@ -16,6 +16,7 @@ apps/web/dist
 packages/shared/dist
 services/app-api/dist
 services/management-api/dist
+specs/prototypes/web-dashboard/dist
 apps/mobile/.metadata
 apps/mobile/ios/Pods
 apps/mobile/ios/.symlinks
