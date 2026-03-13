@@ -1,0 +1,37 @@
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+
+type UserRole = 'admin' | 'gestor' | 'motorista' | null;
+type AuthScope = 'management' | 'app' | null;
+
+interface User {
+  id: number;
+  tenant_id: number | null;
+  firebase_uid?: string;
+  nome: string;
+  email?: string;
+}
+
+interface AuthState {
+  user: User | null;
+  role: UserRole;
+  scope: AuthScope;
+  token: string | null;
+  setAuth: (user: User, role: UserRole, token: string, scope: AuthScope) => void;
+  logout: () => void;
+}
+
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      user: null,
+      role: null,
+      scope: null,
+      token: null,
+      setAuth: (user, role, token, scope) => set({ user, role, token, scope }),
+      logout: () => set({ user: null, role: null, scope: null, token: null }),
+    }),
+    { name: 'rotavans-auth' }
+  )
+);
+

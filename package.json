@@ -1,0 +1,16 @@
+{
+  "name": "rotavans",
+  "private": true,
+  "packageManager": "pnpm@10.6.3",
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "dev:management": "pnpm --filter management-api dev",
+    "dev:app": "pnpm --filter app-api dev",
+    "build:shared": "pnpm --filter @rotavans/shared build",
+    "bootstrap:local": "powershell -ExecutionPolicy Bypass -File ./scripts/bootstrap-local.ps1"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2"
+  }
+}

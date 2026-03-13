@@ -1,0 +1,164 @@
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { box-sizing: border-box; }
+
+:root {
+  --color-bg: #f3f4f6;
+  --color-surface: #ffffff;
+  --color-surface2: #f8f8fa;
+  --color-surface3: #ececef;
+  --color-border: #e7e8ed;
+  --color-text: #101214;
+  --color-text-muted: #7c8391;
+  --color-accent: #1f2429;
+  --color-accent-hover: #15191d;
+  --color-accent-muted: rgba(31, 36, 41, 0.08);
+  --color-success: #58c27d;
+  --color-success-muted: rgba(88, 194, 125, 0.14);
+  --color-danger: #f28c4e;
+  --color-danger-muted: rgba(242, 140, 78, 0.14);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-2xl: 28px;
+}
+
+.dark {
+  --color-bg: #0f1215;
+  --color-surface: #181d22;
+  --color-surface2: #20262d;
+  --color-surface3: #2a333d;
+  --color-border: #313c48;
+  --color-text: #f4f7fb;
+  --color-text-muted: #9ba8b9;
+  --color-accent: #f4f7fb;
+  --color-accent-hover: #d8dde4;
+  --color-accent-muted: rgba(244, 247, 251, 0.12);
+  --color-success: #63ce88;
+  --color-success-muted: rgba(99, 206, 136, 0.18);
+  --color-danger: #f8a063;
+  --color-danger-muted: rgba(248, 160, 99, 0.18);
+}
+
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Satoshi', system-ui, sans-serif;
+  margin: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Plus Jakarta Sans', 'Satoshi', system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--color-text);
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface3);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-success);
+  outline-offset: 2px;
+}
+
+.app-container {
+  height: 100%;
+  background:
+    radial-gradient(90rem 50rem at 10% -30%, rgba(255, 255, 255, 0.7), transparent 70%),
+    radial-gradient(90rem 60rem at 100% 120%, rgba(226, 236, 231, 0.55), transparent 65%),
+    var(--color-bg);
+  display: flex;
+}
+
+body.electron-shell #root {
+  height: calc(100% - 36px);
+  margin-top: 36px;
+}
+
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+}
+
+.badge-success {
+  background: var(--color-success-muted);
+  color: var(--color-success);
+}
+
+.badge-danger {
+  background: var(--color-danger-muted);
+  color: var(--color-danger);
+}
+
+@layer components {
+  .ui-panel {
+    @apply rounded-[24px] border border-border bg-surface2;
+  }
+
+  .ui-panel-soft {
+    @apply rounded-[20px] border border-border bg-surface;
+  }
+
+  .ui-input {
+    @apply h-11 w-full rounded-xl border border-border bg-surface px-4 text-sm text-text placeholder:text-text-muted focus:border-success focus:outline-none transition-all duration-200;
+  }
+
+  .ui-select {
+    @apply h-11 w-full rounded-xl border border-border bg-surface px-4 text-sm text-text focus:border-success focus:outline-none transition-all duration-200;
+  }
+
+  .ui-textarea {
+    @apply w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm text-text placeholder:text-text-muted focus:border-success focus:outline-none transition-all duration-200;
+  }
+
+  .ui-btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-medium text-surface transition-colors duration-150 hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .ui-btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text-muted transition-colors duration-150 hover:text-text disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .ui-table-wrap {
+    @apply overflow-x-auto overflow-y-hidden rounded-[22px] border border-border bg-surface2;
+  }
+
+  .ui-table-head {
+    @apply bg-surface text-left text-sm text-text-muted;
+  }
+
+  .ui-table-row {
+    @apply border-t border-border hover:bg-surface;
+  }
+}
+
+.ui-table-wrap {
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 767px) {
+  .ui-table-wrap > table {
+    min-width: 760px;
+  }
+}
+

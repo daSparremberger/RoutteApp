@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: rotavans
+      POSTGRES_PASSWORD: rotavans
+      POSTGRES_DB: rotavans
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --save 60 1 --loglevel warning
+
+volumes:
+  postgres_data:
