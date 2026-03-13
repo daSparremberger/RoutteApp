@@ -28,4 +28,4 @@ RUN pnpm install --frozen-lockfile --prod --filter web...
 COPY --from=build /app/apps/web/dist ./apps/web/dist
 
 WORKDIR /app/apps/web
-CMD ["pnpm", "preview", "--host", "0.0.0.0", "--port", "4173"]
+CMD ["pnpm", "exec", "serve", "-s", "dist", "-l", "4173"]
